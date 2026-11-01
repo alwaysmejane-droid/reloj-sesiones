@@ -69,7 +69,7 @@ function pintar() {
     var pct = on ? Math.min(100, Math.round(back / (back + fwd) * 100)) : 0;
     html += '<div class="s' + (on ? " on" : "") + '" style="--c:' + s.col + '">' +
       '<div class="top"><span class="dot"></span><div><div class="nom">' + s.n + '</div>' +
-      '<div class="rng">' + h12(s.a) + ' a ' + h12(s.c) + ' NY</div>' +
+      '<div class="rng rny">' + h12(s.a) + ' a ' + h12(s.c) + ' NY</div>' +
       '<div class="rng rcu">' + h12(s.a + dif * 60) + ' a ' + h12(s.c + dif * 60) + ' Cuba</div></div>' +
       '<div class="der"><div class="est">' + (on ? "Abierta" : "Cerrada") + '</div>' +
       '<div class="cnt">' + (on ? "cierra en " : "abre en ") + dur(fwd) + '</div></div></div>' +
