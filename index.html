@@ -48,12 +48,19 @@ h1{font-size:15px;font-weight:500;color:var(--mut);margin:0 0 12px;letter-spacin
 .n .t{flex:1;min-width:0;font-size:14px;overflow-wrap:anywhere}
 .n .d{font-size:11px;color:var(--mut);display:block}
 .n.pasada{opacity:.5}
+.alarmas{display:flex;flex-direction:column;gap:8px}
+.al{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:9px 12px}
+.al input[type=checkbox]{width:20px;height:20px;accent-color:#2fd18b}
+.al .alt{flex:1;font-weight:600}
+.al select{background:var(--bg);color:var(--txt);border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-size:13px}
+.aviso{position:sticky;top:0;z-index:5;background:#2fd18b;color:#06251a;font-weight:700;border-radius:12px;padding:12px 14px;margin-bottom:12px;cursor:pointer}
 .vacio{font-size:13px;color:var(--mut);text-align:center;padding:10px}
 .pie{font-size:11px;color:var(--mut);text-align:center;margin-top:12px}
 </style>
 </head>
 <body>
 <main>
+<div class="aviso" id="aviso" hidden></div>
 <h1>Reloj de sesiones</h1>
 <div class="rel">
 <div class="card" id="cu"><div class="lbl">Cuba</div><div class="hora" id="cuh">--:--:--</div><div class="fecha" id="cuf">&nbsp;</div></div>
@@ -61,6 +68,10 @@ h1{font-size:15px;font-weight:500;color:var(--mut);margin:0 0 12px;letter-spacin
 </div>
 <div id="dif"></div>
 <div class="ses" id="ses"></div>
+<h1 style="margin-top:18px">Alarmas de apertura</h1>
+<div class="alarmas" id="alarmas"></div>
+<div class="pie" style="margin:6px 0 0;text-align:left">Suenan solo con esta página abierta. Con el calendario suenan siempre.</div>
+<a class="noticias" href="sesiones.ics">Agregar aperturas a mi calendario</a>
 <h1 style="margin-top:18px">Noticias de hoy (hora de NY)</h1>
 <div class="nots" id="nots"><div class="vacio">Cargando…</div></div>
 <a class="noticias" href="https://www.forexfactory.com/calendar" target="_blank" rel="noopener"><span>●</span> Calendario completo</a>
