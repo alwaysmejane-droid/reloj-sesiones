@@ -155,6 +155,40 @@ function armarAlarmas() {
   var av = $("aviso"); if (av) av.onclick = function () { av.hidden = true; };
 }
 
+var DIAS_SES = {"Asia": [0, 1, 2, 3, 4], "Londres": [1, 2, 3, 4, 5], "Nueva York": [1, 2, 3, 4, 5]};
+var CODIGO_DIA = ["SU", "MO", "TU", "WE", "TH", "FR", "SA"];
+function p2(n) { return ("0" + n).slice(-2); }
+function urlGoogle(s, modo) {
+  var ahora = new Date(), z = enNY(ahora), nowMin = z.h * 60 + z.m;
+  var ymd = claveDia(ahora).split("-"), base = Date.UTC(+ymd[0], +ymd[1] - 1, +ymd[2]);
+  var dias = DIAS_SES[s.n], k, fecha, wd;
+  for (k = 0; k < 8; k++) {
+    fecha = new Date(base + k * 86400000); wd = fecha.getUTCDay();
+    if (dias.indexOf(wd) >= 0 && !(k === 0 && nowMin >= s.a)) break;
+  }
+  var fin = new Date(fecha.getTime() + (s.c <= s.a ? 86400000 : 0));
+  function ymdStr(d) { return d.getUTCFullYear() + p2(d.getUTCMonth() + 1) + p2(d.getUTCDate()); }
+  function hm(m) { return p2(Math.floor(m / 60)) + p2(m % 60) + "00"; }
+  var regla = "RRULE:FREQ=WEEKLY;BYDAY=" + dias.map(function (d) { return CODIGO_DIA[d]; }).join(",");
+  if (modo === "semana") regla += ";COUNT=" + (dias[dias.length - 1] - wd + 1);
+  return "https://calendar.google.com/calendar/render?action=TEMPLATE" +
+    "&text=" + encodeURIComponent("Apertura " + s.n) +
+    "&dates=" + ymdStr(fecha) + "T" + hm(s.a) + "/" + ymdStr(fin) + "T" + hm(s.c) +
+    "&ctz=America/New_York&recur=" + encodeURIComponent(regla) +
+    "&details=" + encodeURIComponent("Sesión de " + s.n + " (hora de Nueva York)");
+}
+function armarCalendario() {
+  var cont = $("calbtns"), sel = $("rep");
+  if (!cont || !sel) return;
+  function pintarBotones() {
+    cont.innerHTML = SESIONES.map(function (s) {
+      return '<a target="_blank" rel="noopener" style="--c:' + s.col + '" href="' + urlGoogle(s, sel.value) + '">Google Calendar: ' + s.n + '</a>';
+    }).join("");
+  }
+  sel.onchange = pintarBotones;
+  pintarBotones();
+}
+
 var NOTICIAS = null;
 function claveDia(d) {
   return new Intl.DateTimeFormat("en-CA", {timeZone: NY_ZONA}).format(d);
@@ -185,6 +219,7 @@ function cargarNoticias() {
 }
 
 armarAlarmas();
+armarCalendario();
 pintar();
 cargarNoticias();
 setInterval(pintar, 1000);

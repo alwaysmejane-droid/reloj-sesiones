@@ -4,7 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0f1720">
-<title>Reloj de sesiones</title>
+<title>Reloj de Sesiones · Proyecto Fénix</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;900&display=swap">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon.svg">
@@ -15,6 +18,11 @@ html,body{margin:0;background:var(--bg);color:var(--txt);font-family:system-ui,-
 body{padding:max(16px,env(safe-area-inset-top)) 16px max(20px,env(safe-area-inset-bottom));min-height:100vh}
 main{max-width:460px;margin:0 auto}
 h1{font-size:15px;font-weight:500;color:var(--mut);margin:0 0 12px;letter-spacing:.04em;text-transform:uppercase}
+.marca{text-align:center;margin:2px 0 16px;font-family:"Cinzel",Georgia,serif}
+.t1{font-size:13px;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:var(--mut)}
+.t2{font-size:clamp(32px,11vw,48px);font-weight:900;line-height:1.1;margin-top:2px;background:linear-gradient(to top,#d62300 0%,#ff6a00 35%,#ffb300 70%,#ffe9a8 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 10px rgba(255,90,0,.55));animation:llama 2.6s ease-in-out infinite}
+@keyframes llama{0%,100%{filter:drop-shadow(0 0 8px rgba(255,90,0,.5)) brightness(1)}35%{filter:drop-shadow(0 0 14px rgba(255,120,0,.75)) brightness(1.12)}65%{filter:drop-shadow(0 0 9px rgba(255,70,0,.55)) brightness(.95)}}
+@media (prefers-reduced-motion:reduce){.t2{animation:none}}
 .rel{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
 .lbl{font-size:12px;color:var(--mut)}
@@ -27,15 +35,15 @@ h1{font-size:15px;font-weight:500;color:var(--mut);margin:0 0 12px;letter-spacin
 .ses{display:flex;flex-direction:column;gap:10px}
 .s{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--c);border-radius:14px;padding:12px 14px}
 .top{display:flex;align-items:center;gap:10px}
-.dot{width:10px;height:10px;border-radius:50%;background:var(--off);flex:none}
-.on .dot{background:var(--ok);box-shadow:0 0 0 4px rgba(47,209,139,.18)}
+.dot{width:10px;height:10px;border-radius:50%;background:#ff5d5d;box-shadow:0 0 0 4px rgba(255,93,93,.18);flex:none}
+.on .dot{background:var(--ok);box-shadow:0 0 0 4px rgba(47,209,139,.22)}
 .nom{font-weight:600;font-size:16px}
 .rng{font-size:12px;color:var(--mut)}
 .rny{color:#4da3ff;font-weight:600}
 .rcu{color:#f5a524;font-weight:600}
 .der{margin-left:auto;text-align:right}
-.est{font-size:12px;color:var(--off)}
-.on .est{color:var(--ok)}
+.est{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#ff7b7b;background:rgba(255,93,93,.14);border:1px solid rgba(255,93,93,.45);border-radius:999px;padding:2px 10px;margin-bottom:3px}
+.on .est{color:var(--ok);background:rgba(47,209,139,.14);border-color:rgba(47,209,139,.5)}
 .cnt{font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
 .der{flex:none}
 .bar{height:5px;border-radius:3px;background:var(--line);margin-top:10px;overflow:hidden}
@@ -55,6 +63,13 @@ h1{font-size:15px;font-weight:500;color:var(--mut);margin:0 0 12px;letter-spacin
 .al .alt{flex:1;font-weight:600}
 .al select{background:var(--bg);color:var(--txt);border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-size:13px}
 .aviso{position:sticky;top:0;z-index:5;background:#2fd18b;color:#06251a;font-weight:700;border-radius:12px;padding:12px 14px;margin-bottom:12px;cursor:pointer}
+.cal{margin-top:12px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.calt{font-weight:600;margin-bottom:8px}
+.calrep{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:13px;color:var(--mut);margin-bottom:10px}
+.calrep select{background:var(--bg);color:var(--txt);border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-size:13px}
+.calbtns{display:flex;flex-direction:column;gap:8px}
+.calbtns a{display:block;text-align:center;text-decoration:none;color:var(--txt);background:var(--btn,#1d2b3b);border:1px solid var(--line);border-left:4px solid var(--c);border-radius:10px;padding:10px;font-weight:600;font-size:14px}
+.calics{display:block;margin-top:10px;text-align:center;font-size:12px;color:var(--mut)}
 .vacio{font-size:13px;color:var(--mut);text-align:center;padding:10px}
 .pie{font-size:11px;color:var(--mut);text-align:center;margin-top:12px}
 </style>
@@ -62,7 +77,7 @@ h1{font-size:15px;font-weight:500;color:var(--mut);margin:0 0 12px;letter-spacin
 <body>
 <main>
 <div class="aviso" id="aviso" hidden></div>
-<h1>Reloj de sesiones</h1>
+<header class="marca"><div class="t1">Reloj de Sesiones</div><div class="t2">Proyecto Fénix</div></header>
 <div class="rel">
 <div class="card" id="cu"><div class="lbl">Cuba</div><div class="hora" id="cuh">--:--:--</div><div class="fecha" id="cuf">&nbsp;</div></div>
 <div class="card" id="ny"><div class="lbl">Nueva York</div><div class="hora" id="nyh">--:--:--</div><div class="fecha" id="nyf">&nbsp;</div></div>
@@ -72,7 +87,12 @@ h1{font-size:15px;font-weight:500;color:var(--mut);margin:0 0 12px;letter-spacin
 <h1 style="margin-top:18px">Alarmas de apertura</h1>
 <div class="alarmas" id="alarmas"></div>
 <div class="pie" style="margin:6px 0 0;text-align:left">Suenan solo con esta página abierta. Con el calendario suenan siempre.</div>
-<a class="noticias" href="sesiones.ics">Agregar aperturas a mi calendario</a>
+<div class="cal">
+<div class="calt">Agregar a mi calendario</div>
+<label class="calrep">Repetir <select id="rep"><option value="siempre">Siempre (lun a vie)</option><option value="semana">Solo esta semana</option></select></label>
+<div class="calbtns" id="calbtns"></div>
+<a class="calics" href="sesiones.ics">Descargar para Apple u Outlook</a>
+</div>
 <h1 style="margin-top:18px">Noticias de hoy (hora de NY)</h1>
 <div class="nots" id="nots"><div class="vacio">Cargando…</div></div>
 <a class="noticias" href="https://www.forexfactory.com/calendar" target="_blank" rel="noopener"><span>●</span> Calendario completo</a>
