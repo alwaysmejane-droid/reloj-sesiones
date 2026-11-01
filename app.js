@@ -69,7 +69,6 @@ function pintar() {
     var on = abierta(s, wm), fwd = 1, back = 0;
     while (fwd <= 8 * 1440 && abierta(s, (wm + fwd) % 10080) === on) fwd++;
     while (back < 1440 && abierta(s, (wm - back - 1 + 10080) % 10080) === on) back++;
-    revisarAlarma(s, on, fwd, dif);
     var rest = Math.max(1, fwd * 60 - ahora.getSeconds());
     var pct = on ? Math.min(100, Math.round(back / (back + fwd) * 100)) : 0;
     html += '<div class="s' + (on ? " on" : "") + '" style="--c:' + s.col + '">' +
@@ -81,83 +80,6 @@ function pintar() {
       (on ? '<div class="bar"><i style="width:' + pct + '%"></i></div>' : "") + '</div>';
   });
   $("ses").innerHTML = html;
-}
-
-var AL_KEY = "alarmas_v1", ALARMAS = {}, ESTADO_PREV = {}, AUDIO = null;
-function cargarAlarmas() {
-  try { ALARMAS = JSON.parse(localStorage.getItem(AL_KEY) || "{}"); } catch (e) { ALARMAS = {}; }
-  SESIONES.forEach(function (s) { if (!ALARMAS[s.n]) ALARMAS[s.n] = {on: false, min: 10}; });
-}
-function guardarAlarmas() {
-  try { localStorage.setItem(AL_KEY, JSON.stringify(ALARMAS)); } catch (e) {}
-}
-function permisoAvisos() {
-  try {
-    if (!AUDIO && (window.AudioContext || window.webkitAudioContext)) AUDIO = new (window.AudioContext || window.webkitAudioContext)();
-    if (AUDIO && AUDIO.state === "suspended") AUDIO.resume();
-  } catch (e) {}
-  try {
-    if ("Notification" in window && Notification.permission === "default") Notification.requestPermission();
-  } catch (e) {}
-}
-function sonido() {
-  try {
-    if (!AUDIO) return;
-    for (var i = 0; i < 3; i++) {
-      var o = AUDIO.createOscillator(), g = AUDIO.createGain(), t = AUDIO.currentTime + i * 0.35;
-      o.frequency.value = 880; o.connect(g); g.connect(AUDIO.destination);
-      g.gain.setValueAtTime(0.25, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.28);
-      o.start(t); o.stop(t + 0.3);
-    }
-  } catch (e) {}
-}
-function disparar(titulo, texto) {
-  var av = $("aviso");
-  if (av) { av.textContent = titulo + " · " + texto; av.hidden = false; }
-  sonido();
-  try { if (navigator.vibrate) navigator.vibrate([300, 150, 300]); } catch (e) {}
-  try {
-    if ("Notification" in window && Notification.permission === "granted") {
-      if (navigator.serviceWorker && navigator.serviceWorker.ready) {
-        navigator.serviceWorker.ready.then(function (reg) { reg.showNotification(titulo, {body: texto, icon: "icon.svg"}); });
-      } else { new Notification(titulo, {body: texto}); }
-    }
-  } catch (e) {}
-}
-function revisarAlarma(s, on, fwd, dif) {
-  var a = ALARMAS[s.n]; if (!a || !a.on) return;
-  var prev = ESTADO_PREV[s.n]; ESTADO_PREV[s.n] = on;
-  var minuto = Math.floor(Date.now() / 60000), horas = h12(s.a) + " NY / " + h12(s.a + dif * 60) + " Cuba", key;
-  if (on) {
-    if (prev === false && a.min === 0) {
-      key = s.n + ":" + minuto;
-      if (a.ult !== key) { a.ult = key; guardarAlarmas(); disparar(s.n + " abrió", horas); }
-    }
-    return;
-  }
-  if (a.min > 0 && fwd <= a.min) {
-    key = s.n + ":" + (minuto + fwd);
-    if (a.ult !== key) { a.ult = key; guardarAlarmas(); disparar(s.n + " abre en " + fwd + " min", horas); }
-  }
-}
-function armarAlarmas() {
-  var c = $("alarmas"); if (!c) return;
-  cargarAlarmas();
-  var h = "";
-  SESIONES.forEach(function (s, i) {
-    var a = ALARMAS[s.n];
-    h += '<label class="al"><input type="checkbox" data-i="' + i + '"' + (a.on ? " checked" : "") + '><span class="alt">' + s.n + '</span><select data-m="' + i + '">' +
-      [0, 5, 10, 15, 30].map(function (m) { return '<option value="' + m + '"' + (a.min === m ? " selected" : "") + '>' + (m ? m + " min antes" : "a la hora") + '</option>'; }).join("") +
-      '</select></label>';
-  });
-  c.innerHTML = h;
-  c.onchange = function (e) {
-    var t = e.target;
-    if (t.dataset.i !== undefined) { ALARMAS[SESIONES[t.dataset.i].n].on = t.checked; if (t.checked) permisoAvisos(); }
-    if (t.dataset.m !== undefined) { ALARMAS[SESIONES[t.dataset.m].n].min = +t.value; }
-    guardarAlarmas();
-  };
-  var av = $("aviso"); if (av) av.onclick = function () { av.hidden = true; };
 }
 
 var DIAS_SES = {"Asia": [0, 1, 2, 3, 4], "Londres": [1, 2, 3, 4, 5], "Nueva York": [1, 2, 3, 4, 5]};
@@ -223,7 +145,6 @@ function cargarNoticias() {
     .catch(function () { pintarNoticias(); });
 }
 
-armarAlarmas();
 armarCalendario();
 pintar();
 cargarNoticias();
