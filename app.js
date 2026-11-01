@@ -55,6 +55,8 @@ function h12(m) {
 
 function pintar() {
   var ahora = new Date();
+  var sg = ahora.getSeconds(), onda = sg < 30 ? sg / 30 : (60 - sg) / 30, t2 = document.querySelector(".t2");
+  if (t2) t2.style.setProperty("--p", Math.round(onda * 100) + "%");
   var c = hora12(CUBA_ZONA, ahora), n = hora12(NY_ZONA, ahora);
   $("cuh").innerHTML = c.t + "<small>" + c.ap + "</small>";
   $("nyh").innerHTML = n.t + "<small>" + n.ap + "</small>";
