@@ -19,16 +19,16 @@ body{padding:max(16px,env(safe-area-inset-top)) 16px max(20px,env(safe-area-inse
 main{max-width:460px;margin:0 auto}
 h1{font-size:15px;font-weight:500;color:var(--mut);margin:0 0 12px;letter-spacing:.04em;text-transform:uppercase}
 .marca{text-align:center;margin:2px 0 16px;font-family:"Cinzel",Georgia,serif}
-.t1{font-size:13px;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:var(--mut)}
-.t2{font-size:clamp(32px,11vw,48px);font-weight:900;line-height:1.1;margin-top:2px;background:linear-gradient(to top,#d62300 0%,#ff6a00 35%,#ffb300 70%,#ffe9a8 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 10px rgba(255,90,0,.55));animation:llama 2.6s ease-in-out infinite}
+.t1{font-size:clamp(20px,6.2vw,26px);font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#dfe8f3}
+.t2{font-size:clamp(24px,7.4vw,32px);font-weight:900;line-height:1.1;margin-top:2px;background:linear-gradient(to top,#d62300 0%,#ff6a00 35%,#ffb300 70%,#ffe9a8 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 10px rgba(255,90,0,.55));animation:llama 2.6s ease-in-out infinite}
 @keyframes llama{0%,100%{filter:drop-shadow(0 0 8px rgba(255,90,0,.5)) brightness(1)}35%{filter:drop-shadow(0 0 14px rgba(255,120,0,.75)) brightness(1.12)}65%{filter:drop-shadow(0 0 9px rgba(255,70,0,.55)) brightness(.95)}}
 @media (prefers-reduced-motion:reduce){.t2{animation:none}}
 .rel{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
-.lbl{font-size:12px;color:var(--mut)}
-.hora{font-size:clamp(22px,7vw,32px);font-weight:600;font-variant-numeric:tabular-nums;line-height:1.15;margin-top:2px;white-space:nowrap}
+.lbl{font-size:17px;font-weight:700;color:var(--txt)}
+.hora{font-size:clamp(24px,7.4vw,34px);font-weight:600;font-variant-numeric:tabular-nums;line-height:1.15;margin-top:2px;white-space:nowrap}
 .hora small{font-size:.5em;font-weight:500;color:var(--mut);margin-left:3px}
-.fecha{font-size:12px;color:var(--mut);margin-top:2px}
+.fecha{font-size:13px;color:var(--mut);margin-top:2px}
 #cu{border-top:3px solid #f5a524}
 #ny{border-top:3px solid #4da3ff}
 #dif{font-size:12px;color:var(--mut);margin:10px 2px 14px}
@@ -46,6 +46,13 @@ h1{font-size:15px;font-weight:500;color:var(--mut);margin:0 0 12px;letter-spacin
 .on .est{color:var(--ok);background:rgba(47,209,139,.14);border-color:rgba(47,209,139,.5)}
 .cnt{font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
 .der{flex:none}
+.seg{display:inline-block;min-width:3ch;text-align:right;animation:tic .5s ease-out}
+@keyframes tic{from{opacity:.25;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.urg{color:#ffb300}
+.on .urg{color:#ff7b7b}
+.urg .seg{animation:tic .5s ease-out,latido 1s ease-in-out infinite}
+@keyframes latido{50%{text-shadow:0 0 10px currentColor}}
+@media (prefers-reduced-motion:reduce){.seg,.urg .seg{animation:none}}
 .bar{height:5px;border-radius:3px;background:var(--line);margin-top:10px;overflow:hidden}
 .bar i{display:block;height:100%;background:var(--c);width:0}
 .noticias{display:block;margin-top:14px;text-align:center;text-decoration:none;color:var(--txt);background:#1d2b3b;border:1px solid var(--line);border-radius:14px;padding:13px;font-weight:600}
@@ -69,7 +76,9 @@ h1{font-size:15px;font-weight:500;color:var(--mut);margin:0 0 12px;letter-spacin
 .calrep select{background:var(--bg);color:var(--txt);border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-size:13px}
 .calbtns{display:flex;flex-direction:column;gap:8px}
 .calbtns a{display:block;text-align:center;text-decoration:none;color:var(--txt);background:var(--btn,#1d2b3b);border:1px solid var(--line);border-left:4px solid var(--c);border-radius:10px;padding:10px;font-weight:600;font-size:14px}
-.calics{display:block;margin-top:10px;text-align:center;font-size:12px;color:var(--mut)}
+.calsub{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.calsub a{display:block;text-align:center;text-decoration:none;color:var(--txt);background:var(--btn,#1d2b3b);border:1px solid var(--line);border-radius:10px;padding:10px;font-weight:600;font-size:14px}
+.calics{margin-top:8px;text-align:center;font-size:12px;color:var(--mut)}
 .vacio{font-size:13px;color:var(--mut);text-align:center;padding:10px}
 .pie{font-size:11px;color:var(--mut);text-align:center;margin-top:12px}
 </style>
@@ -91,7 +100,11 @@ h1{font-size:15px;font-weight:500;color:var(--mut);margin:0 0 12px;letter-spacin
 <div class="calt">Agregar a mi calendario</div>
 <label class="calrep">Repetir <select id="rep"><option value="siempre">Siempre (lun a vie)</option><option value="semana">Solo esta semana</option></select></label>
 <div class="calbtns" id="calbtns"></div>
-<a class="calics" href="sesiones.ics">Descargar para Apple u Outlook</a>
+<div class="calsub">
+<a href="webcal://alwaysmejane-droid.github.io/reloj-sesiones/sesiones.ics">Apple Calendar</a>
+<a target="_blank" rel="noopener" href="https://outlook.live.com/calendar/0/addfromweb?url=https%3A%2F%2Falwaysmejane-droid.github.io%2Freloj-sesiones%2Fsesiones.ics&amp;name=Aperturas%20de%20mercado">Outlook</a>
+</div>
+<div class="calics">Apple y Outlook agregan las tres sesiones, siempre.</div>
 </div>
 <h1 style="margin-top:18px">Noticias de hoy (hora de NY)</h1>
 <div class="nots" id="nots"><div class="vacio">Cargando…</div></div>

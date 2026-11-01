@@ -42,6 +42,10 @@ function dur(m) {
   var h = Math.floor(m / 60), mm = m % 60;
   return h > 0 ? h + " h " + mm + " min" : mm + " min";
 }
+function durS(t) {
+  var h = Math.floor(t / 3600), m = Math.floor(t % 3600 / 60), s = t % 60;
+  return (h ? h + " h " : "") + dos(m) + " min " + '<span class="seg">' + dos(s) + " s</span>";
+}
 function h12(m) {
   m = ((m % 1440) + 1440) % 1440;
   var h = Math.floor(m / 60), mm = m % 60, ap = h >= 12 ? "PM" : "AM";
@@ -66,13 +70,14 @@ function pintar() {
     while (fwd <= 8 * 1440 && abierta(s, (wm + fwd) % 10080) === on) fwd++;
     while (back < 1440 && abierta(s, (wm - back - 1 + 10080) % 10080) === on) back++;
     revisarAlarma(s, on, fwd, dif);
+    var rest = Math.max(1, fwd * 60 - ahora.getSeconds());
     var pct = on ? Math.min(100, Math.round(back / (back + fwd) * 100)) : 0;
     html += '<div class="s' + (on ? " on" : "") + '" style="--c:' + s.col + '">' +
       '<div class="top"><span class="dot"></span><div><div class="nom">' + s.n + '</div>' +
       '<div class="rng rny">' + h12(s.a) + ' a ' + h12(s.c) + ' NY</div>' +
       '<div class="rng rcu">' + h12(s.a + dif * 60) + ' a ' + h12(s.c + dif * 60) + ' Cuba</div></div>' +
       '<div class="der"><div class="est">' + (on ? "Abierta" : "Cerrada") + '</div>' +
-      '<div class="cnt">' + (on ? "cierra en " : "abre en ") + dur(fwd) + '</div></div></div>' +
+      '<div class="cnt' + (rest < 600 ? " urg" : "") + '">' + (on ? "cierra en " : "abre en ") + durS(rest) + '</div></div></div>' +
       (on ? '<div class="bar"><i style="width:' + pct + '%"></i></div>' : "") + '</div>';
   });
   $("ses").innerHTML = html;
