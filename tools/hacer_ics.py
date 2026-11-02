@@ -4,7 +4,7 @@ import os
 SESIONES = [
     ("Apertura Asia", "20261101T180000", "PT10H", "SU,MO,TU,WE,TH", "asia"),
     ("Apertura Londres", "20261102T030000", "PT9H", "MO,TU,WE,TH,FR", "londres"),
-    ("Apertura Nueva York", "20261102T080000", "PT9H", "MO,TU,WE,TH,FR", "ny"),
+    ("Apertura Nueva York", "20261102T093000", "PT7H30M", "MO,TU,WE,TH,FR", "ny"),
 ]
 L = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Reloj de sesiones//ES", "CALSCALE:GREGORIAN",
      "X-WR-CALNAME:Aperturas de mercado (hora de NY)",
@@ -17,7 +17,6 @@ for nombre, inicio, dur, dias, uid in SESIONES:
     L += ["BEGIN:VEVENT", "UID:" + uid + "@reloj-sesiones", "DTSTAMP:20261101T120000Z",
           "DTSTART;TZID=America/New_York:" + inicio, "DURATION:" + dur,
           "RRULE:FREQ=WEEKLY;BYDAY=" + dias, "SUMMARY:" + nombre,
-          "BEGIN:VALARM", "ACTION:DISPLAY", "DESCRIPTION:" + nombre + " en 10 minutos", "TRIGGER:-PT10M", "END:VALARM",
           "END:VEVENT"]
 L.append("END:VCALENDAR")
 destino = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "sesiones.ics")

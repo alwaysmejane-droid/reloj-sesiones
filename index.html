@@ -31,6 +31,7 @@ h1{font-size:15px;font-weight:500;color:var(--mut);margin:0 0 12px;letter-spacin
 .fecha{font-size:13px;color:var(--mut);margin-top:2px}
 #cu{border-top:3px solid #f5a524}
 #ny{border-top:3px solid #4da3ff}
+#ru{grid-column:1/-1;border-top:3px solid #ff6b8b}
 #dif{font-size:12px;color:var(--mut);margin:10px 2px 14px}
 .ses{display:flex;flex-direction:column;gap:10px}
 .s{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--c);border-radius:14px;padding:12px 14px}
@@ -41,6 +42,7 @@ h1{font-size:15px;font-weight:500;color:var(--mut);margin:0 0 12px;letter-spacin
 .rng{font-size:12px;color:var(--mut)}
 .rny{color:#4da3ff;font-weight:600}
 .rcu{color:#f5a524;font-weight:600}
+.rru{color:#ff6b8b;font-weight:600}
 .der{margin-left:auto;text-align:right}
 .est{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#ff7b7b;background:rgba(255,93,93,.14);border:1px solid rgba(255,93,93,.45);border-radius:999px;padding:2px 10px;margin-bottom:3px}
 .on .est{color:var(--ok);background:rgba(47,209,139,.14);border-color:rgba(47,209,139,.5)}
@@ -81,26 +83,67 @@ h1{font-size:15px;font-weight:500;color:var(--mut);margin:0 0 12px;letter-spacin
 .calics{margin-top:8px;text-align:center;font-size:12px;color:var(--mut)}
 .vacio{font-size:13px;color:var(--mut);text-align:center;padding:10px}
 .pie{font-size:11px;color:var(--mut);text-align:center;margin-top:12px}
+/* Vidrio esmerilado + fenix de fondo (va al final para imponerse a los fondos planos de arriba) */
+body{position:relative;overflow-x:hidden;background:none}
+body::before,body::after{content:"";position:fixed;z-index:-2;border-radius:50%;filter:blur(70px);pointer-events:none}
+body::before{width:380px;height:380px;left:-130px;top:-90px;background:radial-gradient(circle,#ff6a00 0%,rgba(255,106,0,0) 70%);opacity:.55}
+body::after{width:420px;height:420px;right:-170px;bottom:-60px;background:radial-gradient(circle,#c21c00 0%,rgba(194,28,0,0) 70%);opacity:.6}
+.fenix{position:fixed;z-index:-1;left:50%;top:50%;width:min(130vw,600px);height:auto;transform:translate(-50%,-48%);opacity:.5;pointer-events:none;filter:drop-shadow(0 0 22px rgba(255,110,0,.8));animation:respira 5s ease-in-out infinite}
+@keyframes respira{0%,100%{opacity:.42;transform:translate(-50%,-48%) scale(1)}50%{opacity:.58;transform:translate(-50%,-49%) scale(1.035)}}
+@media (prefers-reduced-motion:reduce){.fenix{animation:none}}
+.card,.s,.n,.cal,.noticias,.calsub a,.calbtns a{background:linear-gradient(135deg,rgba(255,255,255,.13),rgba(255,255,255,.05) 55%,rgba(255,255,255,.02));border-color:rgba(255,255,255,.16);-webkit-backdrop-filter:blur(7px) saturate(160%);backdrop-filter:blur(7px) saturate(160%);box-shadow:0 10px 30px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.22)}
+.calbtns a{box-shadow:none}
+.s,.calbtns a{border-left-color:var(--c)}
+.n{border-left-color:var(--ic)}
+#cu{border-top-color:#f5a524}
+#ny{border-top-color:#4da3ff}
+#ru{border-top-color:#ff6b8b}
+.bar{background:rgba(255,255,255,.14)}
 </style>
 </head>
 <body>
+<svg class="fenix" viewBox="0 0 400 400" aria-hidden="true">
+<defs>
+<linearGradient id="fg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff1b8"/><stop offset=".28" stop-color="#ffd54f"/><stop offset=".55" stop-color="#ff9100"/><stop offset=".8" stop-color="#ff4d00"/><stop offset="1" stop-color="#c21c00"/></linearGradient>
+<g id="ala">
+<path d="M215 170C290 120 350 90 392 60C372 110 330 150 215 185Z"/>
+<path d="M215 180C295 150 360 140 396 125C370 165 320 190 215 195Z"/>
+<path d="M215 190C290 180 350 190 385 195C355 225 305 220 215 205Z"/>
+<path d="M215 200C280 215 330 240 360 265C320 270 270 245 215 215Z"/>
+<path d="M215 210C265 240 300 280 318 318C282 305 245 270 215 225Z"/>
+</g>
+<g id="cola"><path d="M196 262C176 310 164 352 186 396C198 362 204 318 200 262Z"/></g>
+</defs>
+<g fill="url(#fg)">
+<use href="#ala"/><use href="#ala" transform="translate(400 0) scale(-1 1)"/>
+<use href="#cola"/><use href="#cola" transform="translate(400 0) scale(-1 1)"/>
+<path d="M200 262C197 320 199 360 200 398C201 360 203 320 200 262Z"/>
+<path d="M200 118C216 128 224 160 221 200C218 240 210 262 200 272C190 262 182 240 179 200C176 160 184 128 200 118Z"/>
+<circle cx="200" cy="106" r="16"/>
+<path d="M214 100L238 108L214 116Z"/>
+<path d="M194 94C186 78 194 66 186 52C200 62 204 76 200 92Z"/>
+<path d="M200 90C198 72 206 60 204 42C214 56 214 74 206 92Z"/>
+<path d="M206 94C210 80 220 72 224 58C226 74 220 88 210 98Z"/>
+</g>
+</svg>
 <main>
 <header class="marca"><div class="t1">Reloj de Sesiones</div><div class="t2">Proyecto Fénix</div></header>
 <div class="rel">
 <div class="card" id="cu"><div class="lbl">Cuba</div><div class="hora" id="cuh">--:--:--</div><div class="fecha" id="cuf">&nbsp;</div></div>
 <div class="card" id="ny"><div class="lbl">Nueva York</div><div class="hora" id="nyh">--:--:--</div><div class="fecha" id="nyf">&nbsp;</div></div>
+<div class="card" id="ru"><div class="lbl">Rusia (Moscú)</div><div class="hora" id="ruh">--:--:--</div><div class="fecha" id="ruf">&nbsp;</div></div>
 </div>
 <div id="dif"></div>
 <div class="ses" id="ses"></div>
 <div class="cal">
 <div class="calt">Agregar a mi calendario</div>
-<label class="calrep">Repetir <select id="rep"><option value="siempre">Siempre (lun a vie)</option><option value="semana">Solo esta semana</option></select></label>
+<label class="calrep">Repetir <select id="rep"><option value="siempre">Siempre (dom a vie)</option><option value="semana">Solo esta semana</option></select></label>
 <div class="calbtns" id="calbtns"></div>
 <div class="calsub">
 <a href="webcal://alwaysmejane-droid.github.io/reloj-sesiones/sesiones.ics">Apple Calendar</a>
 <a target="_blank" rel="noopener" href="https://outlook.live.com/calendar/0/addfromweb?url=https%3A%2F%2Falwaysmejane-droid.github.io%2Freloj-sesiones%2Fsesiones.ics&amp;name=Aperturas%20de%20mercado">Outlook</a>
 </div>
-<div class="calics">Apple y Outlook agregan las tres sesiones, siempre.</div>
+<div class="calics">Apple y Outlook agregan las tres sesiones, siempre. Asia abre el domingo a las 6:00 PM.</div>
 </div>
 <h1 style="margin-top:18px">Noticias de hoy (hora de NY)</h1>
 <div class="nots" id="nots"><div class="vacio">Cargando…</div></div>

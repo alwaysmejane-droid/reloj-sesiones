@@ -1,10 +1,12 @@
 var CUBA_ZONA = "Etc/GMT+4";
 var CUBA_UTC = -4;
+var RUSIA_ZONA = "Europe/Moscow";   // Moscu: UTC+3 fijo, no cambia de hora
+var RUSIA_UTC = 3;
 var NY_ZONA = "America/New_York";
 var SESIONES = [
   {n: "Asia", a: 18 * 60, c: 4 * 60, col: "#f5a524"},
   {n: "Londres", a: 3 * 60, c: 12 * 60, col: "#4da3ff"},
-  {n: "Nueva York", a: 8 * 60, c: 17 * 60, col: "#2fd18b"}
+  {n: "Nueva York", a: 9 * 60 + 30, c: 17 * 60, col: "#2fd18b"}
 ];
 var CIERRE_SEMANA = 17 * 60;
 var APERTURA_SEMANA = 18 * 60;
@@ -62,9 +64,15 @@ function pintar() {
   $("nyh").innerHTML = n.t + "<small>" + n.ap + "</small>";
   $("cuf").textContent = fechaTxt(CUBA_ZONA, ahora);
   $("nyf").textContent = fechaTxt(NY_ZONA, ahora);
-  var dif = CUBA_UTC - offsetNY(ahora);
-  $("dif").textContent = dif === 0 ? "Cuba y Nueva York van a la misma hora ahora."
-    : "Cuba va " + Math.abs(dif) + " h " + (dif > 0 ? "por delante de" : "por detrás de") + " Nueva York ahora.";
+  var r = hora12(RUSIA_ZONA, ahora);
+  $("ruh").innerHTML = r.t + "<small>" + r.ap + "</small>";
+  $("ruf").textContent = fechaTxt(RUSIA_ZONA, ahora);
+  var dif = CUBA_UTC - offsetNY(ahora), difRu = RUSIA_UTC - offsetNY(ahora);
+  function txtDif(nom, d) {
+    return d === 0 ? nom + " y Nueva York van a la misma hora ahora."
+      : nom + " va " + Math.abs(d) + " h " + (d > 0 ? "por delante de" : "por detrás de") + " Nueva York ahora.";
+  }
+  $("dif").innerHTML = txtDif("Cuba", dif) + "<br>" + txtDif("Rusia", difRu);
 
   var z = enNY(ahora), wm = z.w * 1440 + z.h * 60 + z.m, html = "";
   SESIONES.forEach(function (s) {
@@ -76,7 +84,8 @@ function pintar() {
     html += '<div class="s' + (on ? " on" : "") + '" style="--c:' + s.col + '">' +
       '<div class="top"><span class="dot"></span><div><div class="nom">' + s.n + '</div>' +
       '<div class="rng rny">' + h12(s.a) + ' a ' + h12(s.c) + ' NY</div>' +
-      '<div class="rng rcu">' + h12(s.a + dif * 60) + ' a ' + h12(s.c + dif * 60) + ' Cuba</div></div>' +
+      '<div class="rng rcu">' + h12(s.a + dif * 60) + ' a ' + h12(s.c + dif * 60) + ' Cuba</div>' +
+      '<div class="rng rru">' + h12(s.a + difRu * 60) + ' a ' + h12(s.c + difRu * 60) + ' Rusia</div></div>' +
       '<div class="der"><div class="est">' + (on ? "Abierta" : "Cerrada") + '</div>' +
       '<div class="cnt' + (rest < 600 ? " urg" : "") + '">' + (on ? "cierra en " : "abre en ") + durS(rest) + '</div></div></div>' +
       (on ? '<div class="bar"><i style="width:' + pct + '%"></i></div>' : "") + '</div>';

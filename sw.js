@@ -1,4 +1,4 @@
-var CACHE = "reloj-v2";
+var CACHE = "reloj-v3";
 var ARCHIVOS = ["./", "index.html", "app.js", "manifest.webmanifest", "icon.svg"];
 self.addEventListener("install", function (e) {
   e.waitUntil(caches.open(CACHE).then(function (c) { return c.addAll(ARCHIVOS); }));
