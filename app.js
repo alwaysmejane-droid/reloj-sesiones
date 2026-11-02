@@ -130,8 +130,23 @@ function h12(m) {
   return h + ":" + dos(mm) + " " + ap;
 }
 
+// Hora real: se pide a internet (cabecera Date del propio servidor) y NO se confia en la hora del telefono, que en Cuba
+// queda mal al pasar la zona a manual. Si no hay internet se usa la del telefono.
+var DESFASE = 0;   // milisegundos que hay que sumar a la hora del telefono para tener la hora real
+function ahoraReal() { return new Date(Date.now() + DESFASE); }
+function sincronizarHora() {
+  var t0 = Date.now();
+  fetch("./?hora=" + t0, {method: "HEAD", cache: "no-store"}).then(function (r) {
+    var f = r.headers.get("Date"), t1 = Date.now(), servidor = f ? new Date(f).getTime() : NaN;
+    if (isNaN(servidor)) return;
+    var d = servidor + 500 + (t1 - t0) / 2 - t1;   // la cabecera viene en segundos enteros (+0,5 s) y se descuenta medio viaje
+    DESFASE = Math.abs(d) < 1500 ? 0 : d;          // si el telefono esta bien (menos de 1,5 s de diferencia) no se toca
+    pintar();
+  }).catch(function () {});
+}
+
 function pintar() {
-  var ahora = new Date();
+  var ahora = ahoraReal();
   var sg = ahora.getSeconds(), onda = sg < 30 ? sg / 30 : (60 - sg) / 30, t2 = document.querySelector(".t2");
   if (t2) t2.style.setProperty("--p", Math.round(onda * 100) + "%");
   var c = hora12(CUBA_ZONA, ahora), n = hora12(NY_ZONA, ahora);
@@ -174,7 +189,7 @@ var DIAS_SES = {"Asia": [0, 1, 2, 3, 4], "Londres": [1, 2, 3, 4, 5], "Nueva York
 var CODIGO_DIA = ["SU", "MO", "TU", "WE", "TH", "FR", "SA"];
 function p2(n) { return ("0" + n).slice(-2); }
 function urlGoogle(s, modo) {
-  var ahora = new Date(), z = enNY(ahora), nowMin = z.h * 60 + z.m;
+  var ahora = ahoraReal(), z = enNY(ahora), nowMin = z.h * 60 + z.m;
   var ymd = claveDia(ahora).split("-"), base = Date.UTC(+ymd[0], +ymd[1] - 1, +ymd[2]);
   var dias = DIAS_SES[s.n], k, fecha, wd;
   for (k = 0; k < 8; k++) {
@@ -212,7 +227,7 @@ function pintarNoticias() {
   var cont = $("nots");
   if (!cont) return;
   if (!NOTICIAS) { cont.innerHTML = '<div class="vacio">No se pudieron cargar las noticias.</div>'; return; }
-  var ahora = new Date(), hoy = claveDia(ahora), color = {High: "#ff5d5d", Medium: "#f5a524"}, html = "", hay = 0;
+  var ahora = ahoraReal(), hoy = claveDia(ahora), color = {High: "#ff5d5d", Medium: "#f5a524"}, html = "", hay = 0;
   NOTICIAS.forEach(function (e) {
     if (!color[e.impact]) return;
     var d = new Date(e.date);
@@ -277,12 +292,14 @@ function armarSelector() {
 
 armarSelector();
 armarCalendario();
+sincronizarHora();
 pintar();
 cargarNoticias();
 setInterval(pintar, 1000);
+setInterval(sincronizarHora, 10 * 60 * 1000);
 setInterval(cargarNoticias, 30 * 60 * 1000);
 setInterval(pintarNoticias, 60 * 1000);
-document.addEventListener("visibilitychange", function () { if (!document.hidden) pintar(); });
+document.addEventListener("visibilitychange", function () { if (!document.hidden) { sincronizarHora(); pintar(); } });
 
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("sw.js").catch(function () {});
