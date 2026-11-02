@@ -1,7 +1,79 @@
 var CUBA_ZONA = "Etc/GMT+4";
 var CUBA_UTC = -4;
-var RUSIA_ZONA = "Europe/Moscow";   // Moscu: UTC+3 fijo, no cambia de hora
-var RUSIA_UTC = 3;
+// Zona elegida por cada persona para la tarjeta grande (se guarda solo en su aparato). Por defecto, Moscu.
+// [pais, zona por defecto, ciudades]; una ciudad puede ser [nombre, zona] si su zona es otra. La primera es la que se elige al cambiar de pais.
+var PAISES = [
+  ["Alemania","Europe/Berlin",["Berlín","Hamburgo","Múnich","Colonia","Fráncfort","Stuttgart","Düsseldorf","Leipzig","Dortmund","Dresde"]],
+  ["Arabia Saudita","Asia/Riyadh",["Riad","Yeda","La Meca","Medina","Dammam","Taif"]],
+  ["Argentina","America/Argentina/Buenos_Aires",["Buenos Aires","Córdoba","Rosario","Mendoza","La Plata","Tucumán","Mar del Plata","Salta","Santa Fe","Neuquén"]],
+  ["Australia","Australia/Sydney",["Sídney","Canberra","Newcastle",["Melbourne","Australia/Melbourne"],["Brisbane","Australia/Brisbane"],["Gold Coast","Australia/Brisbane"],["Perth","Australia/Perth"],["Adelaida","Australia/Adelaide"],["Hobart","Australia/Hobart"],["Darwin","Australia/Darwin"]]],
+  ["Bolivia","America/La_Paz",["La Paz","Santa Cruz de la Sierra","Cochabamba","Sucre","Oruro","Tarija"]],
+  ["Brasil","America/Sao_Paulo",["Brasilia","São Paulo","Río de Janeiro","Salvador","Fortaleza","Belo Horizonte","Curitiba","Recife","Porto Alegre",["Manaos","America/Manaus"]]],
+  ["Canadá","America/Toronto",["Toronto","Montreal","Ottawa","Quebec",["Vancouver","America/Vancouver"],["Victoria","America/Vancouver"],["Calgary","America/Edmonton"],["Edmonton","America/Edmonton"],["Winnipeg","America/Winnipeg"],["Saskatoon","America/Regina"],["Halifax","America/Halifax"]]],
+  ["Chile","America/Santiago",["Santiago","Valparaíso","Viña del Mar","Concepción","Antofagasta","La Serena","Temuco","Iquique"]],
+  ["China","Asia/Shanghai",["Pekín","Shanghái","Cantón","Shenzhen","Chengdu","Chongqing","Tianjin","Wuhan","Hangzhou","Nankín"]],
+  ["Colombia","America/Bogota",["Bogotá","Medellín","Cali","Barranquilla","Cartagena","Bucaramanga","Cúcuta","Pereira","Santa Marta","Manizales"]],
+  ["Corea del Sur","Asia/Seoul",["Seúl","Busan","Incheon","Daegu","Daejeon","Gwangju"]],
+  ["Costa Rica","America/Costa_Rica",["San José","Alajuela","Cartago","Heredia","Liberia","Puntarenas"]],
+  ["Ecuador","America/Guayaquil",["Quito","Guayaquil","Cuenca","Ambato","Manta","Loja"]],
+  ["Egipto","Africa/Cairo",["El Cairo","Alejandría","Guiza","Luxor","Asuán","Sharm el-Sheij"]],
+  ["El Salvador","America/El_Salvador",["San Salvador","Santa Ana","San Miguel","Soyapango","Santa Tecla","La Libertad"]],
+  ["Emiratos Árabes","Asia/Dubai",["Dubái","Abu Dabi","Sharjah","Al Ain","Ajmán","Ras Al Khaimah"]],
+  ["España","Europe/Madrid",["Madrid","Barcelona","Valencia","Sevilla","Málaga","Bilbao","Zaragoza","Palma de Mallorca",["Las Palmas","Atlantic/Canary"],["Santa Cruz de Tenerife","Atlantic/Canary"]]],
+  ["Estados Unidos","America/New_York",["Nueva York","Miami","Atlanta","Washington D. C.","Boston","Filadelfia","Orlando",["Detroit","America/Detroit"],["Chicago","America/Chicago"],["Dallas (Texas)","America/Chicago"],["Houston (Texas)","America/Chicago"],["Austin (Texas)","America/Chicago"],["San Antonio (Texas)","America/Chicago"],["Arlington (Texas)","America/Chicago"],["Denver","America/Denver"],["Phoenix","America/Phoenix"],["Los Ángeles","America/Los_Angeles"],["San Francisco","America/Los_Angeles"],["San Diego","America/Los_Angeles"],["Las Vegas","America/Los_Angeles"],["Seattle","America/Los_Angeles"],["Anchorage","America/Anchorage"],["Honolulu","Pacific/Honolulu"]]],
+  ["Filipinas","Asia/Manila",["Manila","Ciudad Quezón","Davao","Cebú","Zamboanga","Makati"]],
+  ["Francia","Europe/Paris",["París","Marsella","Lyon","Toulouse","Niza","Nantes","Estrasburgo","Burdeos","Lille","Montpellier"]],
+  ["Grecia","Europe/Athens",["Atenas","Salónica","Patras","Heraclión","Larisa","Rodas"]],
+  ["Guatemala","America/Guatemala",["Ciudad de Guatemala","Quetzaltenango","Escuintla","Antigua Guatemala","Cobán","Puerto Barrios"]],
+  ["Guyana","America/Guyana",["Georgetown","Linden","New Amsterdam","Anna Regina","Bartica","Skeldon"]],
+  ["Honduras","America/Tegucigalpa",["Tegucigalpa","San Pedro Sula","La Ceiba","Choluteca","Comayagua","Puerto Cortés"]],
+  ["Hong Kong","Asia/Hong_Kong",["Hong Kong","Kowloon","Tsuen Wan","Sha Tin","Tuen Mun"]],
+  ["India","Asia/Kolkata",["Nueva Delhi","Bombay","Bangalore","Calcuta","Chennai","Hyderabad","Ahmedabad","Pune","Jaipur","Lucknow"]],
+  ["Indonesia","Asia/Jakarta",["Yakarta","Surabaya","Bandung","Medan","Semarang","Yogyakarta",["Denpasar (Bali)","Asia/Makassar"],["Makassar","Asia/Makassar"]]],
+  ["Irlanda","Europe/Dublin",["Dublín","Cork","Galway","Limerick","Waterford","Kilkenny"]],
+  ["Israel","Asia/Jerusalem",["Tel Aviv","Jerusalén","Haifa","Beerseba","Eilat","Netanya"]],
+  ["Italia","Europe/Rome",["Roma","Milán","Nápoles","Turín","Palermo","Génova","Bolonia","Florencia","Venecia","Bari"]],
+  ["Japón","Asia/Tokyo",["Tokio","Osaka","Yokohama","Nagoya","Sapporo","Fukuoka","Kioto","Kobe"]],
+  ["Marruecos","Africa/Casablanca",["Casablanca","Rabat","Marrakech","Fez","Tánger","Agadir"]],
+  ["México","America/Mexico_City",["Ciudad de México","Guadalajara","Monterrey","Puebla","Mérida","León",["Cancún","America/Cancun"],["Tijuana","America/Tijuana"],["Hermosillo","America/Hermosillo"],["Chihuahua","America/Chihuahua"]]],
+  ["Nicaragua","America/Managua",["Managua","León","Masaya","Granada","Matagalpa","Chinandega"]],
+  ["Nigeria","Africa/Lagos",["Lagos","Abuya","Kano","Ibadán","Port Harcourt","Benin City"]],
+  ["Nueva Zelanda","Pacific/Auckland",["Auckland","Wellington","Christchurch","Hamilton","Tauranga","Dunedin"]],
+  ["Países Bajos","Europe/Amsterdam",["Ámsterdam","Róterdam","La Haya","Utrecht","Eindhoven","Groninga"]],
+  ["Pakistán","Asia/Karachi",["Karachi","Lahore","Islamabad","Faisalabad","Rawalpindi","Multan"]],
+  ["Panamá","America/Panama",["Ciudad de Panamá","Colón","David","Santiago","Chitré","La Chorrera"]],
+  ["Paraguay","America/Asuncion",["Asunción","Ciudad del Este","Encarnación","San Lorenzo","Luque","Pedro Juan Caballero"]],
+  ["Perú","America/Lima",["Lima","Arequipa","Trujillo","Chiclayo","Cusco","Piura","Iquitos","Huancayo"]],
+  ["Polonia","Europe/Warsaw",["Varsovia","Cracovia","Łódź","Breslavia","Poznań","Gdansk"]],
+  ["Portugal","Europe/Lisbon",["Lisboa","Oporto","Braga","Coímbra","Faro","Funchal",["Ponta Delgada (Azores)","Atlantic/Azores"]]],
+  ["Puerto Rico","America/Puerto_Rico",["San Juan","Ponce","Bayamón","Carolina","Caguas","Mayagüez"]],
+  ["Reino Unido","Europe/London",["Londres","Mánchester","Birmingham","Liverpool","Glasgow","Edimburgo","Bristol","Leeds","Cardiff","Belfast"]],
+  ["República Dominicana","America/Santo_Domingo",["Santo Domingo","Santiago de los Caballeros","La Romana","San Pedro de Macorís","Puerto Plata","Punta Cana"]],
+  ["Rusia","Europe/Moscow",["Moscú","San Petersburgo","Kazán","Nizhni Nóvgorod",["Kaliningrado","Europe/Kaliningrad"],["Samara","Europe/Samara"],["Ekaterimburgo","Asia/Yekaterinburg"],["Omsk","Asia/Omsk"],["Novosibirsk","Asia/Novosibirsk"],["Krasnoyarsk","Asia/Krasnoyarsk"],["Vladivostok","Asia/Vladivostok"]]],
+  ["Singapur","Asia/Singapore",["Singapur","Jurong","Woodlands","Tampines","Sengkang"]],
+  ["Sudáfrica","Africa/Johannesburg",["Johannesburgo","Ciudad del Cabo","Durban","Pretoria","Port Elizabeth","Bloemfontein"]],
+  ["Suiza","Europe/Zurich",["Zúrich","Ginebra","Basilea","Berna","Lausana","Lucerna"]],
+  ["Tailandia","Asia/Bangkok",["Bangkok","Chiang Mai","Pattaya","Phuket","Nonthaburi","Khon Kaen"]],
+  ["Trinidad y Tobago","America/Port_of_Spain",["Puerto España","San Fernando","Chaguanas","Arima","Scarborough","Point Fortin","Couva"]],
+  ["Turquía","Europe/Istanbul",["Estambul","Ankara","Esmirna","Bursa","Antalya","Adana","Konya","Gaziantep"]],
+  ["Ucrania","Europe/Kyiv",["Kiev","Járkov","Odesa","Dnipró","Leópolis","Zaporiyia"]],
+  ["Uruguay","America/Montevideo",["Montevideo","Salto","Paysandú","Maldonado","Punta del Este","Rivera"]],
+  ["Venezuela","America/Caracas",["Caracas","Maracaibo","Valencia","Barquisimeto","Maracay","Ciudad Guayana","Barcelona","Mérida"]]
+];
+var CIUDADES = [];   // [pais, ciudad, zona]
+PAISES.forEach(function (p) {
+  p[2].forEach(function (c) { CIUDADES.push(typeof c === "string" ? [p[0], c, p[1]] : [p[0], c[0], c[1]]); });
+});
+var ZONA_DEF = {p: "Rusia", c: "Moscú", z: "Europe/Moscow"};
+function zonaValida(z) { try { new Intl.DateTimeFormat("en-US", {timeZone: z}); return true; } catch (e) { return false; } }
+function cargarZona() {
+  try {
+    var o = JSON.parse(localStorage.getItem("fenix_zona") || "null");
+    if (o && o.z && o.c && zonaValida(o.z)) return o;
+  } catch (e) {}
+  return ZONA_DEF;
+}
+var ZONA = cargarZona();
 var NY_ZONA = "America/New_York";
 var SESIONES = [
   {n: "Asia", a: 18 * 60, c: 4 * 60, col: "#f5a524"},
@@ -28,10 +100,13 @@ function enNY(d) {
   var w = {Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6}[o.weekday];
   return {w: w, h: o.hour % 24, m: +o.minute};
 }
-function offsetNY(d) {
-  var a = new Date(d.toLocaleString("en-US", {timeZone: NY_ZONA}));
+function offsetMin(d, zona) {
+  var a = new Date(d.toLocaleString("en-US", {timeZone: zona}));
   var b = new Date(d.toLocaleString("en-US", {timeZone: "UTC"}));
-  return Math.round((a - b) / 3600000);
+  return Math.round((a - b) / 60000);
+}
+function offsetNY(d) {
+  return Math.round(offsetMin(d, NY_ZONA) / 60);
 }
 function abierta(s, wm) {
   var d = Math.floor(wm / 1440) % 7, t = wm % 1440;
@@ -64,15 +139,17 @@ function pintar() {
   $("nyh").innerHTML = n.t + "<small>" + n.ap + "</small>";
   $("cuf").textContent = fechaTxt(CUBA_ZONA, ahora);
   $("nyf").textContent = fechaTxt(NY_ZONA, ahora);
-  var r = hora12(RUSIA_ZONA, ahora);
+  var r = hora12(ZONA.z, ahora);
   $("ruh").innerHTML = r.t + "<small>" + r.ap + "</small>";
-  $("ruf").textContent = fechaTxt(RUSIA_ZONA, ahora);
-  var dif = CUBA_UTC - offsetNY(ahora), difRu = RUSIA_UTC - offsetNY(ahora);
-  function txtDif(nom, d) {
-    return d === 0 ? nom + " y Nueva York van a la misma hora ahora."
-      : nom + " va " + Math.abs(d) + " h " + (d > 0 ? "por delante de" : "por detrás de") + " Nueva York ahora.";
+  $("ruf").textContent = fechaTxt(ZONA.z, ahora);
+  $("ruNom").textContent = ZONA.c === ZONA.p ? ZONA.c : ZONA.c + ", " + ZONA.p;
+  var dif = CUBA_UTC - offsetNY(ahora), difRu = offsetMin(ahora, ZONA.z) - offsetMin(ahora, NY_ZONA) ; // difRu en MINUTOS
+  function txtDif(nom, m) {
+    var h = Math.floor(Math.abs(m) / 60), mm = Math.abs(m) % 60, t = h + " h" + (mm ? " " + mm + " min" : "");
+    return m === 0 ? nom + " y Nueva York van a la misma hora ahora."
+      : nom + " va " + t + " " + (m > 0 ? "por delante de" : "por detrás de") + " Nueva York ahora.";
   }
-  $("dif").innerHTML = txtDif("Cuba", dif) + "<br>" + txtDif("Rusia", difRu);
+  $("dif").innerHTML = txtDif("Cuba", dif * 60) + "<br>" + txtDif(ZONA.c, difRu);
 
   var z = enNY(ahora), wm = z.w * 1440 + z.h * 60 + z.m, html = "";
   SESIONES.forEach(function (s) {
@@ -85,7 +162,7 @@ function pintar() {
       '<div class="top"><span class="dot"></span><div><div class="nom">' + s.n + '</div>' +
       '<div class="rng rny">' + h12(s.a) + ' a ' + h12(s.c) + ' NY</div>' +
       '<div class="rng rcu">' + h12(s.a + dif * 60) + ' a ' + h12(s.c + dif * 60) + ' Cuba</div>' +
-      '<div class="rng rru">' + h12(s.a + difRu * 60) + ' a ' + h12(s.c + difRu * 60) + ' Rusia</div></div>' +
+      '<div class="rng rru">' + h12(s.a + difRu) + ' a ' + h12(s.c + difRu) + ' ' + ZONA.c + '</div></div>' +
       '<div class="der"><div class="est">' + (on ? "Abierta" : "Cerrada") + '</div>' +
       '<div class="cnt' + (rest < 600 ? " urg" : "") + '">' + (on ? "cierra en " : "abre en ") + durS(rest) + '</div></div></div>' +
       (on ? '<div class="bar"><i style="width:' + pct + '%"></i></div>' : "") + '</div>';
@@ -156,6 +233,49 @@ function cargarNoticias() {
     .catch(function () { pintarNoticias(); });
 }
 
+function opciones(sel, textos, valores, elegido) {
+  sel.innerHTML = textos.map(function (t, i) {
+    return '<option value="' + valores[i] + '"' + (valores[i] === elegido ? " selected" : "") + ">" + t + "</option>";
+  }).join("");
+}
+function guardarZona(x) {
+  ZONA = {p: x[0], c: x[1], z: x[2]};
+  try { localStorage.setItem("fenix_zona", JSON.stringify(ZONA)); } catch (err) {}
+  pintar();
+}
+function armarSelector() {
+  var btn = $("ruCambiar"), pk = $("picker"), sp = $("selPais"), sc = $("selCiudad");
+  if (!btn || !pk || !sp || !sc) return;
+  var paises = [];
+  CIUDADES.forEach(function (x) { if (paises.indexOf(x[0]) < 0) paises.push(x[0]); });
+  paises.sort(function (a, b) { return a.localeCompare(b, "es"); });
+  function ciudadesDe(p) { return CIUDADES.filter(function (x) { return x[0] === p; }); }
+  function llenarCiudades(p, elegida) {
+    var lista = ciudadesDe(p), t = lista.map(function (x) { return x[1]; }), v = t.slice();
+    if (!elegida) { t.unshift("Elige una ciudad…"); v.unshift(""); }
+    opciones(sc, t, v, elegida || "");
+  }
+  function llenar() {
+    opciones(sp, paises, paises, ZONA.p);
+    llenarCiudades(ZONA.p, ZONA.c);
+  }
+  btn.onclick = function () {
+    pk.hidden = !pk.hidden;
+    btn.textContent = pk.hidden ? "Cambiar \u25be" : "Cerrar \u25b4";
+    if (!pk.hidden) llenar();
+  };
+  sp.onchange = function () {          // al cambiar de pais se pide la ciudad; nada cambia hasta elegirla
+    llenarCiudades(sp.value, null);
+  };
+  sc.onchange = function () {          // al elegir la ciudad se aplica y las listas se esconden
+    if (!sc.value) return;
+    guardarZona(ciudadesDe(sp.value).filter(function (x) { return x[1] === sc.value; })[0]);
+    pk.hidden = true;
+    btn.textContent = "Cambiar ▾";
+  };
+}
+
+armarSelector();
 armarCalendario();
 pintar();
 cargarNoticias();

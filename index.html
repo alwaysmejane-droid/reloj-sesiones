@@ -99,6 +99,13 @@ body::after{width:420px;height:420px;right:-170px;bottom:-60px;background:radial
 #ny{border-top-color:#4da3ff}
 #ru{border-top-color:#ff6b8b}
 .bar{background:rgba(255,255,255,.14)}
+.ruCab{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.cambiar{flex:none;white-space:nowrap;font:inherit;font-size:12px;font-weight:600;color:var(--txt);background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:4px 12px;cursor:pointer}
+.cambiar:hover{background:rgba(255,255,255,.18)}
+.picker{margin-top:12px;border-top:1px solid rgba(255,255,255,.14);padding-top:10px;display:flex;flex-direction:column;gap:10px}
+.picker label{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--mut)}
+.picker select{font:inherit;font-size:15px;color:var(--txt);background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.22);border-radius:10px;padding:10px 12px;width:100%}
+.picker[hidden]{display:none}
 </style>
 </head>
 <body>
@@ -131,7 +138,8 @@ body::after{width:420px;height:420px;right:-170px;bottom:-60px;background:radial
 <div class="rel">
 <div class="card" id="cu"><div class="lbl">Cuba</div><div class="hora" id="cuh">--:--:--</div><div class="fecha" id="cuf">&nbsp;</div></div>
 <div class="card" id="ny"><div class="lbl">Nueva York</div><div class="hora" id="nyh">--:--:--</div><div class="fecha" id="nyf">&nbsp;</div></div>
-<div class="card" id="ru"><div class="lbl">Rusia (Moscú)</div><div class="hora" id="ruh">--:--:--</div><div class="fecha" id="ruf">&nbsp;</div></div>
+<div class="card" id="ru"><div class="lbl ruCab"><span id="ruNom">Rusia (Moscú)</span><button type="button" id="ruCambiar" class="cambiar">Cambiar ▾</button></div><div class="hora" id="ruh">--:--:--</div><div class="fecha" id="ruf">&nbsp;</div>
+<div class="picker" id="picker" hidden><label>País<select id="selPais"></select></label><label>Ciudad<select id="selCiudad"></select></label></div></div>
 </div>
 <div id="dif"></div>
 <div class="ses" id="ses"></div>
